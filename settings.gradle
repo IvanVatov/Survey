@@ -1,0 +1,3 @@
+rootProject.name = "Survey"
+include ':app'
+include ':backend'
