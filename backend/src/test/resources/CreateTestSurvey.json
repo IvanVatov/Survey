@@ -1,0 +1,41 @@
+{
+  "id": 1,
+  "name": "Test Survey",
+  "questions": [{
+    "id": 0,
+    "question": "Test Question",
+    "isSingle": false,
+    "answers": [{
+      "id": 0,
+      "answer": "Test Answer 1"
+    },
+      {
+        "id": 0,
+        "answer": "Test Answer 2"
+      },
+      {
+        "id": 0,
+        "answer": "Test Answer 3"
+      }
+    ]
+  },
+    {
+      "id": 0,
+      "question": "Test Question 2",
+      "isSingle": false,
+      "answers": [{
+        "id": 0,
+        "answer": "Test Answer 2/1"
+      },
+        {
+          "id": 0,
+          "answer": "Test Answer 2/2"
+        },
+        {
+          "id": 0,
+          "answer": "Test Answer 2/3"
+        }
+      ]
+    }
+  ]
+}

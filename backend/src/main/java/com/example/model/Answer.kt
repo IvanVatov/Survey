@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class Answer(
-    val answerId: Int,
+    val id: Int,
     val answer: String
 )

@@ -1,6 +1,8 @@
 package com.example.survey.database
 
-import com.example.survey.database.table.UserTable
+import com.example.survey.database.table.AnswerTable
+import com.example.survey.database.table.QuestionTable
+import com.example.survey.database.table.SurveyTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
@@ -35,7 +37,10 @@ object Database {
     }
 
     private fun createTables() {
-        UserTable.createTable()
+//        UserTable.createTable()
+        SurveyTable.createTable()
+        QuestionTable.createTable()
+        AnswerTable.createTable()
     }
 
     private fun getDatabaseVersion(): Int {

@@ -1,5 +1,6 @@
 package com.example.survey.api
 
+import com.example.survey.api.route.survey
 import com.example.survey.api.route.token
 import com.example.survey.api.route.user
 import com.example.survey.database.table.UserTable
@@ -42,6 +43,8 @@ fun Application.module(testing: Boolean = false) {
         token()
 
         user()
+
+        survey()
 //
 //        authenticate {
 //            user()

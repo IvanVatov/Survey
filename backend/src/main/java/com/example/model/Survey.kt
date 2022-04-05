@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class Survey(
-    val surveyId: Int,
+    val id: Int,
+    val name: String,
     val questions: List<Question>
 )

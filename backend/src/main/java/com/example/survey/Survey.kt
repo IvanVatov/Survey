@@ -1,5 +1,6 @@
 package com.example.survey
 
+import com.example.survey.database.Database
 import kotlinx.serialization.json.Json
 
 
@@ -10,6 +11,6 @@ val jsonInstance = Json {
 }
 
 fun main(args: Array<String>) {
-
+    Database
     io.ktor.server.netty.EngineMain.main(args)
 }
