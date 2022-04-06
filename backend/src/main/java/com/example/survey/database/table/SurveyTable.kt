@@ -87,10 +87,13 @@ object SurveyTable {
             st = con.prepareStatement(
                 "SELECT s.$COL_ID, s.$COL_NAME, " +
                         "q.${QuestionTable.COL_ID} AS 'qId', q.${QuestionTable.COL_QUESTION}, q.${QuestionTable.COL_IS_SINGLE}, " +
-                        "a.${AnswerTable.COL_ID} AS aId, a.${AnswerTable.COL_ANSWER} " +
+                        "a.${AnswerTable.COL_ID} AS aId, a.${AnswerTable.COL_ANSWER}, CASE WHEN uac.cnt IS NULL THEN 0 ELSE uac.cnt END AS cnt " +
                         "FROM $TABLE_NAME s " +
                         "INNER JOIN ${QuestionTable.TABLE_NAME} q ON s.$COL_ID = q.${QuestionTable.COL_SURVEY_ID} " +
                         "INNER JOIN ${AnswerTable.TABLE_NAME} a ON q.$COL_ID = a.${AnswerTable.COL_QUESTION_ID} " +
+                        "LEFT JOIN (SELECT ${UserAnswerTable.COL_ANSWER_ID}, COUNT(${UserAnswerTable.COL_USER_SURVEY_ID}) AS cnt FROM ${UserAnswerTable.TABLE_NAME} " +
+                        "GROUP BY ${UserAnswerTable.COL_ANSWER_ID}) uac " +
+                        "ON a.id = uac.${UserAnswerTable.COL_ANSWER_ID} " +
                         "WHERE s.$COL_ID = ? " +
                         "ORDER BY q.${QuestionTable.COL_ID}, a.${AnswerTable.COL_ID};"
             )
@@ -108,7 +111,8 @@ object SurveyTable {
                         rs.getString(QuestionTable.COL_QUESTION),
                         rs.getInt(QuestionTable.COL_IS_SINGLE),
                         rs.getInt("aId"),
-                        rs.getString(AnswerTable.COL_ANSWER)
+                        rs.getString(AnswerTable.COL_ANSWER),
+                        rs.getInt("cnt")
                     )
                 )
             }
@@ -134,7 +138,7 @@ object SurveyTable {
 
             helperList.forEach {
                 if (questionId == it.questionId) {
-                    answers.add(Answer(it.answerId, it.answer))
+                    answers.add(Answer(it.answerId, it.answer, it.count))
                 } else {
                     questions.add(Question(questionId, question, isSingle == 1, answers))
 
@@ -144,7 +148,7 @@ object SurveyTable {
                     question = it.question
                     isSingle = it.isSingle
 
-                    answers.add(Answer(it.answerId, it.answer))
+                    answers.add(Answer(it.answerId, it.answer, it.count))
                 }
             }
 
@@ -202,6 +206,7 @@ object SurveyTable {
         val question: String,
         val isSingle: Int,
         val answerId: Int,
-        val answer: String
+        val answer: String,
+        val count: Int
     )
 }

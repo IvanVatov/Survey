@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Answer(
     val id: Int,
-    val answer: String
+    val answer: String,
+    var count: Int? = null
 )

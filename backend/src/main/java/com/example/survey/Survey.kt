@@ -8,6 +8,7 @@ val jsonInstance = Json {
     ignoreUnknownKeys = true
     prettyPrint = true
     isLenient = true
+    encodeDefaults = true
 }
 
 fun main(args: Array<String>) {

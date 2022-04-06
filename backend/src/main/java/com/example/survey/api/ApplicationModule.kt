@@ -37,6 +37,7 @@ fun Application.module(testing: Boolean = false) {
 
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+        templateUpdateDelayMilliseconds = 0L
         outputFormat = HTMLOutputFormat.INSTANCE
     }
 

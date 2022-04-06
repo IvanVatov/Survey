@@ -2,9 +2,7 @@ package com.example.survey.api.route
 
 import com.example.model.Survey
 import com.example.survey.api.Response
-import com.example.survey.database.table.AnswerTable
-import com.example.survey.database.table.QuestionTable
-import com.example.survey.database.table.SurveyTable
+import com.example.survey.database.table.*
 import io.ktor.application.*
 import io.ktor.freemarker.*
 import io.ktor.http.*
@@ -17,6 +15,7 @@ fun Application.survey() {
         getSurveyId()
         createSurvey()
         getAllSurvey()
+        getResults()
 
     }
 }
@@ -25,6 +24,14 @@ fun Route.getAllSurvey() {
     get("/") {
         val surveyEntries = SurveyTable.getAll()
         call.respond(FreeMarkerContent("index.ftl", mapOf("entries" to surveyEntries), ""))
+    }
+}
+
+fun Route.getResults() {
+    get("/results") {
+        val id = call.request.queryParameters["id"]?.toInt() ?: 1
+        val survey = SurveyTable.getById(id)
+        call.respond(FreeMarkerContent("results.ftl", mapOf("survey" to survey), ""))
     }
 }
 

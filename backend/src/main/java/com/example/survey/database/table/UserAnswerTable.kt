@@ -1,8 +1,10 @@
 package com.example.survey.database.table
 
+import com.example.model.User
 import com.example.model.UserAnswer
 import com.example.survey.database.Database
 import java.sql.Connection
+import java.sql.ResultSet
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.logging.Level
@@ -61,6 +63,35 @@ object UserAnswerTable {
         } finally {
             con?.close()
             st?.close()
+        }
+
+        return result
+    }
+
+    fun getCountForAnswer(answerId: Int): Int {
+        var result = 0
+
+        var con: Connection? = null
+        var st: Statement? = null
+        var rs: ResultSet? = null
+
+        try {
+            con = Database.getConnection()
+            st = con.prepareStatement("SELECT COUNT(*) FROM $TABLE_NAME WHERE $COL_ANSWER_ID = ?")
+
+            st.setInt(1, answerId)
+
+            rs = st.executeQuery()
+            if (rs.next()) {
+                result = rs.getInt(1)
+            }
+
+        } catch (e: SQLException) {
+            logger.log(Level.SEVERE, "getCountForAnswer", e)
+        } finally {
+            con?.close()
+            st?.close()
+            rs?.close()
         }
 
         return result
