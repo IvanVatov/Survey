@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class UserAnswer(
-    val answerId: Int
+    val id: Int
 )

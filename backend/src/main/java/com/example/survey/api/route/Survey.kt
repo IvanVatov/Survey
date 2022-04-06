@@ -6,6 +6,7 @@ import com.example.survey.database.table.AnswerTable
 import com.example.survey.database.table.QuestionTable
 import com.example.survey.database.table.SurveyTable
 import io.ktor.application.*
+import io.ktor.freemarker.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -15,6 +16,15 @@ fun Application.survey() {
     routing {
         getSurveyId()
         createSurvey()
+        getAllSurvey()
+
+    }
+}
+
+fun Route.getAllSurvey() {
+    get("/") {
+        val surveyEntries = SurveyTable.getAll()
+        call.respond(FreeMarkerContent("index.ftl", mapOf("entries" to surveyEntries), ""))
     }
 }
 

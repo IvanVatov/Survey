@@ -13,7 +13,7 @@ import java.util.logging.Logger
 
 object SurveyTable {
 
-    private val logger = Logger.getLogger(SurveyTable::class.java.simpleName)
+    val logger = Logger.getLogger(SurveyTable::class.java.simpleName)
 
     const val TABLE_NAME = "survey"
     const val COL_ID = "id"
@@ -111,8 +111,6 @@ object SurveyTable {
                         rs.getString(AnswerTable.COL_ANSWER)
                     )
                 )
-
-                rs.getString(COL_NAME)
             }
 
         } catch (e: SQLException) {
@@ -154,6 +152,44 @@ object SurveyTable {
 
             result = Survey(first.id, first.name, questions)
 
+        }
+
+        return result
+    }
+
+    fun getAll(): List<Survey> {
+        val result = ArrayList<Survey>()
+
+        var con: Connection? = null
+        var st: Statement? = null
+        var rs: ResultSet? = null
+
+        try {
+            con = Database.getConnection()
+            st = con.prepareStatement(
+                "SELECT $COL_ID, $COL_NAME " +
+                        "FROM $TABLE_NAME " +
+                        "ORDER BY $COL_ID;"
+            )
+
+            rs = st.executeQuery()
+
+            while (rs.next()) {
+                result.add(
+                    Survey(
+                        rs.getInt(COL_ID),
+                        rs.getString(COL_NAME),
+                        emptyList()
+                    )
+                )
+            }
+
+        } catch (e: SQLException) {
+            logger.log(Level.SEVERE, "getAll", e)
+        } finally {
+            con?.close()
+            st?.close()
+            rs?.close()
         }
 
         return result
