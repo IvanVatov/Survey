@@ -1,4 +1,4 @@
-package com.example.survey.ui
+package com.example.survey
 
 object Configuration {
     const val SERVER_ADDRESS = "10.0.2.2"

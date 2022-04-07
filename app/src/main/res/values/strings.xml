@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Survey</string>
+    <string name="start">Start</string>
+    <string name="survey_id">Survey Id</string>
+    <string name="email">Email</string>
 </resources>
