@@ -36,7 +36,7 @@ fun HomeScreen() {
 
                 OutlinedButton(
                     onClick = {
-                        ApplicationState.screenState.value = ApplicationState.Screen.START
+                        ApplicationState.startSurvey()
                     },
                     modifier = Modifier
                         .fillMaxWidth()

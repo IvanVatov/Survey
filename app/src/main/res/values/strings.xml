@@ -3,4 +3,7 @@
     <string name="start">Start</string>
     <string name="survey_id">Survey Id</string>
     <string name="email">Email</string>
+    <string name="next">NEXT</string>
+    <string name="previous">PREVIOUS</string>
+    <string name="done">DONE</string>
 </resources>

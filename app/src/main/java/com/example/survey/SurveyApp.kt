@@ -14,8 +14,18 @@ fun SurveyApp() {
         ApplicationState.screenState
     }
 
+    var survey by remember {
+        ApplicationState.survey
+    }
+
+    survey?.let {
+        SurveyScreen()
+        return
+    }
+
     when(screenState) {
         ApplicationState.Screen.HOME -> HomeScreen()
+        ApplicationState.Screen.SURVEY -> SurveyScreen()
         else -> SurveyScreen()
     }
 }
