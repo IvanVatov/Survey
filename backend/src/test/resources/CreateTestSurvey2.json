@@ -1,0 +1,149 @@
+{
+  "id": 1,
+  "name": "Mental Health Survey",
+  "questions": [{
+    "id": 0,
+    "question": "Overall how would you rate your mental health?",
+    "isSingle": true,
+    "answers": [{
+      "id": 0,
+      "answer": "Excellent"
+    },
+      {
+        "id": 0,
+        "answer": "Very good"
+      },
+      {
+        "id": 0,
+        "answer": "Good"
+      },
+      {
+        "id": 0,
+        "answer": "Fair"
+      },
+      {
+        "id": 0,
+        "answer": "Poor"
+      }
+    ]
+  },
+    {
+      "id": 0,
+      "question": "During the past two weeks how often have you felt sad or depressed?",
+      "isSingle": true,
+      "answers": [{
+        "id": 0,
+        "answer": "Extremely often"
+      },
+        {
+          "id": 0,
+          "answer": "Very often"
+        },
+        {
+          "id": 0,
+          "answer": "Somewhat often"
+        },
+        {
+          "id": 0,
+          "answer": "Not so often"
+        },
+        {
+          "id": 0,
+          "answer": "Not at all often"
+        }
+      ]
+    }, {
+      "id": 0,
+      "question": "During the past two weeks how often has your mental health interfered with your personal relationships?",
+      "isSingle": true,
+      "answers": [{
+        "id": 0,
+        "answer": "Extremely often"
+      },
+        {
+          "id": 0,
+          "answer": "Very often"
+        },
+        {
+          "id": 0,
+          "answer": "Somewhat often"
+        },
+        {
+          "id": 0,
+          "answer": "Not so often"
+        },
+        {
+          "id": 0,
+          "answer": "Not at all often"
+        }
+      ]
+    }, {
+      "id": 0,
+      "question": "During the past two weeks how often has your mental health interfered with your ability to get work done or accomplish tasks?",
+      "isSingle": true,
+      "answers": [{
+        "id": 0,
+        "answer": "Extremely often"
+      },
+        {
+          "id": 0,
+          "answer": "Very often"
+        },
+        {
+          "id": 0,
+          "answer": "Somewhat often"
+        },
+        {
+          "id": 0,
+          "answer": "Not so often"
+        },
+        {
+          "id": 0,
+          "answer": "Not at all often"
+        }
+      ]
+    }, {
+      "id": 0,
+      "question": "What is your gender?",
+      "isSingle": true,
+      "answers": [{
+        "id": 0,
+        "answer": "Female"
+      },
+        {
+          "id": 0,
+          "answer": "Male"
+        }
+      ]
+    }, {
+      "id": 0,
+      "question": "How old are you?",
+      "isSingle": true,
+      "answers": [{
+        "id": 0,
+        "answer": "7-14"
+      },
+        {
+          "id": 0,
+          "answer": "14-18"
+        },
+        {
+          "id": 0,
+          "answer": "18-24"
+        },
+        {
+          "id": 0,
+          "answer": "24-40"
+        },
+        {
+          "id": 0,
+          "answer": "40-60"
+        },
+        {
+          "id": 0,
+          "answer": "60+"
+        }
+      ]
+    }
+  ]
+}

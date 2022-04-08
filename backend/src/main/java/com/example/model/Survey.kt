@@ -3,7 +3,7 @@ package com.example.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Survey(
+data class Survey(
     val id: Int,
     val name: String,
     val questions: List<Question>

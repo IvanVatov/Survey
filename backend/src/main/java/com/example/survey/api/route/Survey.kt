@@ -39,6 +39,8 @@ fun Route.getSurveyId() {
     get("/survey") {
         call.request.queryParameters["id"]?.let {
             call.respond(Response(SurveyTable.getById(it.toInt()), null, true))
+
+            println("Client request getSurveyId $it")
         } ?: call.respond(
             HttpStatusCode.BadRequest,
             Response<Boolean>(null, "Parameter id is required", false)
@@ -62,6 +64,8 @@ fun Route.createSurvey() {
                 }
             }
         }
+
+        println("New Survey created \n$survey")
 
         call.respond(Response(surveyId, null, true))
     }

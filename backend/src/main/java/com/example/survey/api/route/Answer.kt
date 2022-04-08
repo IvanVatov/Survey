@@ -35,5 +35,7 @@ fun Route.sendAnswer() {
             }
         }
         call.respond(Response(true, null, true))
+
+        println("New Survey result was sent \n$userSurvey")
     }
 }

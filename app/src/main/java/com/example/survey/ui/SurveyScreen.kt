@@ -107,7 +107,12 @@ private fun SingleChoiceQuestion(
         question.answers.forEach { answer ->
 
             val onClickHandle = {
-                ApplicationState.questionAnswers.value = listOf(answer.id)
+                val answers = ApplicationState.questionAnswers.value.toMutableList()
+                ApplicationState.currentQuestion.value?.answers?.forEach {
+                    answers.remove(it.id)
+                }
+                answers.add(answer.id)
+                ApplicationState.questionAnswers.value = answers
             }
 
             val checked = checkedState.contains(answer.id)

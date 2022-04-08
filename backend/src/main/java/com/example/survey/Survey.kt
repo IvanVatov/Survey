@@ -12,6 +12,7 @@ val jsonInstance = Json {
 }
 
 fun main(args: Array<String>) {
+    println("Starting Backend application")
     Database
     io.ktor.server.netty.EngineMain.main(args)
 }

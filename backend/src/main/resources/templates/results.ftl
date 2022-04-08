@@ -13,22 +13,21 @@
 <body style="text-align: center; font-family: sans-serif">
 	<div class='container'>
 		<div class="row">
-			<div class="col-md-4"><img class="rounded-circle img-thumbnail" src="/static/logo.png" class="center"></div>
+			<div class="col-md-12"><img class="rounded-circle img-thumbnail" src="/static/logo.png" class="center"></div>
 			<h2><b>Survey</b></h2>
 		</div>
 
-		<hr>
 		<#list survey.questions as question>
 
 		<div class="row">
-			<div class="col-md-6 p-2"><b>${question.question}</b></div>
+			<div class="col-md-12 p-2 pt-3"><h4>${question.question}</h4></div>
 
 		        <#list question.answers as answer>
 
                     <div class="row">
-                        <div class="col-md-5 p-2"><b>${answer.answer}</b></div>
+                        <div style="text-align: right"; class="col-md-6 p-2">${answer.answer}</div>
 
-                        <div class="col-md-1 p-2"><b>${answer.count}</b></div>
+                        <div style="text-align: left"; class="col-md-6 p-2"><b>${answer.count}</b></div>
                     </div>
         		</#list>
 		</div>

@@ -3,7 +3,7 @@ package com.example.survey.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Answer(
+data class Answer(
     val id: Int,
     val answer: String,
     var count: Int? = null
