@@ -35,8 +35,11 @@ fun SurveyScreen() {
 
     Scaffold(
         topBar = {
+            var currentIndex by remember { ApplicationState.currentQuestionIndex }
+
             val animatedProgress by animateFloatAsState(
-                targetValue = (4 + 1) / 10.toFloat(),
+                targetValue = currentIndex / (ApplicationState.survey.value?.questions?.size
+                    ?: 0 - 1).toFloat(),
                 animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
             )
             LinearProgressIndicator(
@@ -99,12 +102,12 @@ private fun SingleChoiceQuestion(
 ) {
     Column(modifier = modifier) {
 
-        var checkedState by remember { ApplicationState.currentQuestionAnswers }
+        var checkedState by remember { ApplicationState.questionAnswers }
 
         question.answers.forEach { answer ->
 
             val onClickHandle = {
-                ApplicationState.currentQuestionAnswers.value = listOf(answer.id)
+                ApplicationState.questionAnswers.value = listOf(answer.id)
             }
 
             val checked = checkedState.contains(answer.id)
@@ -163,7 +166,7 @@ private fun MultipleChoiceQuestion(
 ) {
     Column(modifier = modifier) {
 
-        var checkedState by remember { ApplicationState.currentQuestionAnswers }
+        var checkedState by remember { ApplicationState.questionAnswers }
 
         for (answer in question.answers) {
 
@@ -221,14 +224,14 @@ private fun MultipleChoiceQuestion(
 }
 
 private fun check(checked: Boolean, id: Int) {
-    val list = ApplicationState.currentQuestionAnswers.value.toMutableList()
+    val list = ApplicationState.questionAnswers.value.toMutableList()
 
     if (checked)
         list.add(id)
     else
         list.remove(id)
 
-    ApplicationState.currentQuestionAnswers.value = list
+    ApplicationState.questionAnswers.value = list
 }
 
 @Composable
@@ -237,52 +240,36 @@ fun SurveyBottomBar() {
         elevation = 7.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
-
-        var checkedState by remember { ApplicationState.currentQuestionAnswers }
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-            if (false) {
+            if (ApplicationState.currentQuestionIndex.value > 0) {
                 OutlinedButton(
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
                     onClick = {
-                        //todo
+                        ApplicationState.previewsQuestion()
                     }
                 ) {
                     Text(text = stringResource(id = R.string.previous))
                 }
                 Spacer(modifier = Modifier.width(16.dp))
             }
-            if (false) {
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
-                    onClick = {
-                        //todo
-                    },
-                    enabled = checkedState.isNotEmpty()
-                ) {
-                    Text(text = stringResource(id = R.string.done))
-                }
-            } else {
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
-                    onClick = {
-                        //todo
-                    },
-                    enabled = checkedState.isNotEmpty()
-                ) {
-                    Text(text = stringResource(id = R.string.next))
-                }
+            Button(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(48.dp),
+                onClick = {
+                    ApplicationState.nextQuestion()
+                },
+                enabled = ApplicationState.nextEnabled()
+            ) {
+                Text(text = stringResource(id = R.string.next))
             }
+
         }
     }
 }

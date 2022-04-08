@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Survey</string>
     <string name="start">Start</string>
+    <string name="load">Load</string>
+    <string name="send_result">Send Result</string>
     <string name="survey_id">Survey Id</string>
     <string name="email">Email</string>
+    <string name="user_name">User Name</string>
     <string name="next">NEXT</string>
     <string name="previous">PREVIOUS</string>
     <string name="done">DONE</string>
+    <string name="home_label">Welcome to Survey</string>
+    <string name="start_description">Please enter your user name</string>
+    <string name="home_description">In order to start you survey please load survey ID</string>
 </resources>
