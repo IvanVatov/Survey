@@ -4,10 +4,12 @@ import com.example.survey.api.AuthCredential
 import com.example.survey.api.JwtConfig
 import com.example.survey.api.TokenResponse
 import com.example.survey.api.validate
-import io.ktor.application.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
 
 fun Route.token() {
 

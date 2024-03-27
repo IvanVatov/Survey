@@ -1,6 +1,6 @@
 package com.example.model
 
-import io.ktor.auth.*
+import io.ktor.server.auth.Principal
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -6,8 +6,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 group 'com.example.survey'
@@ -22,18 +22,23 @@ dependencies {
 
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
-    implementation "io.ktor:ktor-serialization:$ktor_version"
 
-    implementation "io.ktor:ktor-auth:$ktor_version"
-    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+    implementation "io.ktor:ktor-server-content-negotiation:$ktor_version"
+    implementation "io.ktor:ktor-serialization-kotlinx-json:$ktor_version"
 
-    implementation "io.ktor:ktor-html-builder:$ktor_version"
-    implementation "io.ktor:ktor-freemarker:$ktor_version"
+    implementation "io.ktor:ktor-server-auth:$ktor_version"
+    implementation "io.ktor:ktor-server-auth-jwt:$ktor_version"
 
+    implementation "io.ktor:ktor-server-status-pages:$ktor_version"
 
-    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
-    implementation 'com.zaxxer:HikariCP:4.0.3'
+    implementation "io.ktor:ktor-server-velocity:$ktor_version"
 
-    implementation 'org.slf4j:slf4j-api:1.7.36'
-    implementation 'org.slf4j:slf4j-nop:1.7.36'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
+
+    implementation "org.xerial:sqlite-jdbc:3.45.2.0"
+    implementation "com.zaxxer:HikariCP:5.0.1"
+
+    implementation "ch.qos.logback:logback-classic:1.5.3"
+    implementation "org.slf4j:slf4j-api:2.0.12"
+
 }

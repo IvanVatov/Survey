@@ -1,20 +1,19 @@
 package com.example.survey.api.route
 
-import com.example.model.UserAnswer
 import com.example.model.UserSurvey
 import com.example.survey.api.Response
 import com.example.survey.database.table.UserAnswerTable
 import com.example.survey.database.table.UserSurveyTable
-import io.ktor.application.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 
-fun Application.answer() {
-    routing {
-        sendAnswer()
-        getAnswerId()
-    }
+fun Route.answer() {
+    sendAnswer()
+    getAnswerId()
 }
 
 fun Route.getAnswerId() {

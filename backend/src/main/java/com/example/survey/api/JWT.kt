@@ -5,7 +5,7 @@ import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.model.User
 import com.example.survey.database.table.UserTable
-import io.ktor.auth.*
+import io.ktor.server.auth.Credential
 import kotlinx.serialization.Serializable
 import java.util.*
 

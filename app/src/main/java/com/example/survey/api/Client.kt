@@ -2,8 +2,8 @@ package com.example.survey.api
 
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import java.security.cert.X509Certificate
@@ -17,8 +17,8 @@ val jsonInstance = Json {
 }
 
 val httpClient = HttpClient(OkHttp) {
-    install(JsonFeature) {
-        serializer = KotlinxSerializer(jsonInstance)
+    install(ContentNegotiation) {
+        json(jsonInstance)
     }
 
     engine {

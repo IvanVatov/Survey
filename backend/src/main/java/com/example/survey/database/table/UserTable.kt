@@ -17,6 +17,7 @@ object UserTable {
     private const val TABLE_NAME = "user"
     private const val COL_USER_NAME = "userName"
     private const val COL_PASSWORD = "password"
+    private const val COL_ROLE = "role"
 
     internal fun createTable() {
         var con: Connection? = null

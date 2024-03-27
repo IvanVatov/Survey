@@ -6,20 +6,24 @@ import com.example.survey.api.route.token
 import com.example.survey.api.route.user
 import com.example.survey.database.table.UserTable
 import com.example.survey.jsonInstance
-import freemarker.cache.ClassTemplateLoader
-import freemarker.core.HTMLOutputFormat
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
-import io.ktor.features.*
-import io.ktor.freemarker.*
+
 import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.serialization.*
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.http.content.staticFiles
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.routing
+import io.ktor.server.velocity.Velocity
+import org.slf4j.LoggerFactory
+import java.io.File
 
-
+private val _LOG = LoggerFactory.getLogger(Application::class.java)
 fun Application.module(testing: Boolean = false) {
 
     install(ContentNegotiation) {
@@ -27,18 +31,22 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(StatusPages) {
-        exception<Throwable> { e ->
+        exception<Throwable> { call, cause ->
+            _LOG.error("webServerModule", cause)
             call.respond(
                 HttpStatusCode.BadRequest,
-                Response<Boolean>(null, e.localizedMessage, false)
+                Response<Boolean>(null, cause.localizedMessage, false)
             )
         }
     }
 
-    install(FreeMarker) {
-        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
-        templateUpdateDelayMilliseconds = 0L
-        outputFormat = HTMLOutputFormat.INSTANCE
+//    install(FreeMarker) {
+//        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+//        templateUpdateDelayMilliseconds = 0L
+//        outputFormat = HTMLOutputFormat.INSTANCE
+//    }
+    install(Velocity) {
+        setProperty("resource.loader.file.path", "./templates")
     }
 
     install(Authentication) {
@@ -71,7 +79,5 @@ fun Application.module(testing: Boolean = false) {
 }
 
 fun Route.static() {
-    static("/static") {
-        resources("files")
-    }
+    staticFiles("/static", File("./static"))
 }

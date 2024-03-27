@@ -2,23 +2,25 @@ package com.example.survey.api.route
 
 import com.example.survey.api.Response
 import com.example.survey.database.table.UserTable
-import io.ktor.application.*
-import io.ktor.http.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
 
-fun Application.user() {
-    routing {
-        getId()
-        getAll()
-    }
+fun Route.user() {
+    getId()
+    getAll()
 }
 
 fun Route.getId() {
     get("/user") {
         call.request.queryParameters["id"]?.let {
             call.respond(Response("asd", null, true))
-        } ?: call.respond(HttpStatusCode.BadRequest, Response<Boolean>(null, "Parameter id is required", false))
+        } ?: call.respond(
+            HttpStatusCode.BadRequest,
+            Response<Boolean>(null, "Parameter id is required", false)
+        )
     }
 }
 

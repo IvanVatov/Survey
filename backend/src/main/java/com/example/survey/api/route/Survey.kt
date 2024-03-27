@@ -2,36 +2,38 @@ package com.example.survey.api.route
 
 import com.example.model.Survey
 import com.example.survey.api.Response
-import com.example.survey.database.table.*
-import io.ktor.application.*
-import io.ktor.freemarker.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import com.example.survey.database.table.AnswerTable
+import com.example.survey.database.table.QuestionTable
+import com.example.survey.database.table.SurveyTable
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.velocity.VelocityContent
 
-fun Application.survey() {
-    routing {
-        getSurveyId()
-        createSurvey()
-        getAllSurvey()
-        getResults()
-
-    }
+fun Route.survey() {
+    getSurveyId()
+    createSurvey()
+    getAllSurvey()
+    getResults()
 }
 
 fun Route.getAllSurvey() {
     get("/") {
         val surveyEntries = SurveyTable.getAll()
-        call.respond(FreeMarkerContent("index.ftl", mapOf("entries" to surveyEntries), ""))
+        call.respond(VelocityContent("index.html", mutableMapOf("entries" to surveyEntries)))
     }
 }
 
 fun Route.getResults() {
     get("/results") {
         val id = call.request.queryParameters["id"]?.toInt() ?: 1
-        val survey = SurveyTable.getById(id)
-        call.respond(FreeMarkerContent("results.ftl", mapOf("survey" to survey), ""))
+        val survey =
+            SurveyTable.getById(id) ?: throw Throwable("Implement null")//  TODO IMPLEMENT NULL
+        call.respond(VelocityContent("results.html", mutableMapOf("survey" to survey)))
     }
 }
 
