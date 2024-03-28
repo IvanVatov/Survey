@@ -17,15 +17,37 @@ import io.ktor.server.routing.post
 import io.ktor.server.velocity.VelocityContent
 
 
-fun Route.getAllSurvey() {
+fun Route.dashboard() {
     get("/") {
         val surveyEntries = SurveyTable.getAll()
 
         val principal = call.principal<UserPrincipal>() ?: throw Exception()
 
-        call.respond(VelocityContent("index.html", mutableMapOf("user" to principal, "entries" to surveyEntries)))
+        call.respond(
+            VelocityContent(
+                "index.html",
+                mutableMapOf("user" to principal, "entries" to surveyEntries)
+            )
+        )
     }
 }
+
+fun Route.surveyList() {
+    get("/survey/list") {
+
+        val principal = call.principal<UserPrincipal>() ?: throw Exception()
+
+        val surveyEntries = SurveyTable.getAll()
+
+        call.respond(
+            VelocityContent(
+                "survey-list.html",
+                mutableMapOf("user" to principal, "entries" to surveyEntries)
+            )
+        )
+    }
+}
+
 
 fun Route.getResults() {
     get("/results") {
