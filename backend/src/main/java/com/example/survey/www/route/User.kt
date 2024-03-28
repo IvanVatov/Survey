@@ -33,6 +33,7 @@ fun Route.login() {
             if (user != null) {
                 call.sessions.set(user)
                 call.respondRedirect("/")
+                return@post
             }
 
         }
