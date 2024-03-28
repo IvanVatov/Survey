@@ -46,12 +46,15 @@ fun Application.module(testing: Boolean = false) {
         }
         exception<Throwable> { call, cause ->
             _LOG.error("webServerModule", cause)
-            call.request.uri
+            if (call.request.uri.startsWith("/api")) {
 
-            call.respond(
-                HttpStatusCode.BadRequest,
-                Response<Boolean>(null, cause.localizedMessage, false)
-            )
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    Response<Boolean>(null, cause.localizedMessage, false)
+                )
+            } else {
+                call.respond(VelocityContent("error-500.html", mutableMapOf()))
+            }
         }
     }
 
@@ -69,7 +72,7 @@ fun Application.module(testing: Boolean = false) {
     install(Authentication) {
         session<UserPrincipal> {
             validate { session ->
-                if(session.userName.startsWith("jet")) {
+                if (session.account != null) {
                     session
                 } else {
                     null

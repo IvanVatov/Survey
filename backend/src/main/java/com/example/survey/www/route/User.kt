@@ -28,13 +28,48 @@ fun Route.login() {
         val password = params["password"]
 
         if (userName != null && password != null) {
-           val user = UserTable.getByCredential(userName, password)
+            val user = UserTable.getByCredential(userName, password)
 
-            call.sessions.set(user)
-            call.respondRedirect("/")
+            if (user != null) {
+                call.sessions.set(user)
+                call.respondRedirect("/")
+            }
+
         }
 
         call.respond(VelocityContent("auth-login.html", mutableMapOf()))
+    }
+}
+
+fun Route.register() {
+    get("/register") {
+        call.respond(VelocityContent("auth-register.html", mutableMapOf()))
+    }
+    post("/register") {
+        val params = call.receiveParameters()
+
+        val name = params["name"]
+
+        val account = params["account"]
+
+        val password = params["password"]
+
+        val password2 = params["password2"]
+
+        if (name != null && password != null && account != null && password2 != null && password == password2) {
+
+            val avatar = "./assets/compiled/jpg/1.jpg"
+            val user = UserTable.insert(name, account, password, avatar)
+
+            if (user != null) {
+                call.sessions.set(UserPrincipal(account, name, avatar, 0))
+                call.respondRedirect("/")
+                return@post
+            }
+
+        }
+
+        call.respond(VelocityContent("auth-register.html", mutableMapOf()))
     }
 }
 
