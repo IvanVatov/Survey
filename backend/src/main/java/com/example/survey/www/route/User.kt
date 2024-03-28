@@ -1,6 +1,6 @@
-package com.example.survey.api.route
+package com.example.survey.www.route
 
-import com.example.survey.api.Response
+import com.example.survey.model.Response
 import com.example.survey.database.table.UserTable
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

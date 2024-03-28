@@ -1,4 +1,4 @@
-package com.example.survey.api.route
+package com.example.survey.www.route
 
 import com.example.survey.api.AuthCredential
 import com.example.survey.api.JwtConfig

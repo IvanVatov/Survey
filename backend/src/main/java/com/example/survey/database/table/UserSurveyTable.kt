@@ -1,6 +1,6 @@
 package com.example.survey.database.table
 
-import com.example.model.UserSurvey
+import com.example.survey.model.UserSurvey
 import com.example.survey.database.Database
 import java.sql.Connection
 import java.sql.ResultSet

@@ -1,13 +1,11 @@
-package com.example.survey.api
+package com.example.survey
 
-import com.example.survey.api.route.answer
-import com.example.survey.api.route.survey
-import com.example.survey.api.route.token
-import com.example.survey.api.route.user
+import com.example.survey.api.JwtConfig
+import com.example.survey.api.apiRoutes
 import com.example.survey.database.table.UserTable
-import com.example.survey.jsonInstance
-
-import io.ktor.http.*
+import com.example.survey.model.Response
+import com.example.survey.www.wwwRoutes
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -40,11 +38,6 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-//    install(FreeMarker) {
-//        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
-//        templateUpdateDelayMilliseconds = 0L
-//        outputFormat = HTMLOutputFormat.INSTANCE
-//    }
     install(Velocity) {
         setProperty("resource.loader.file.path", "./templates")
     }
@@ -62,13 +55,9 @@ fun Application.module(testing: Boolean = false) {
     }
 
     routing {
-        token()
+        apiRoutes()
 
-        user()
-
-        survey()
-
-        answer()
+        wwwRoutes()
 
         static()
 //

@@ -1,4 +1,4 @@
-package com.example.model
+package com.example.survey.model
 
 import io.ktor.server.auth.Principal
 import kotlinx.serialization.Serializable

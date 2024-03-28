@@ -1,8 +1,7 @@
 package com.example.survey.database.table
 
-import com.example.model.User
-import com.example.model.UserAnswer
 import com.example.survey.database.Database
+import com.example.survey.model.UserAnswer
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException

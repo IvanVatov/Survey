@@ -1,6 +1,5 @@
 package com.example.survey
 
-import com.example.survey.api.module
 import com.example.survey.database.Database
 import io.ktor.server.application.Application
 import io.ktor.server.engine.applicationEngineEnvironment

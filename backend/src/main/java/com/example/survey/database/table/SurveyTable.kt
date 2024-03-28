@@ -1,8 +1,8 @@
 package com.example.survey.database.table
 
-import com.example.model.Answer
-import com.example.model.Question
-import com.example.model.Survey
+import com.example.survey.model.Answer
+import com.example.survey.model.Question
+import com.example.survey.model.Survey
 import com.example.survey.database.Database
 import java.sql.Connection
 import java.sql.ResultSet
