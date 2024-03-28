@@ -5,8 +5,10 @@ import com.example.survey.model.Response
 import com.example.survey.database.table.AnswerTable
 import com.example.survey.database.table.QuestionTable
 import com.example.survey.database.table.SurveyTable
+import com.example.survey.model.UserPrincipal
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
+import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -18,7 +20,10 @@ import io.ktor.server.velocity.VelocityContent
 fun Route.getAllSurvey() {
     get("/") {
         val surveyEntries = SurveyTable.getAll()
-        call.respond(VelocityContent("index.html", mutableMapOf("entries" to surveyEntries)))
+
+        val principal = call.principal<UserPrincipal>() ?: throw Exception()
+
+        call.respond(VelocityContent("index.html", mutableMapOf("user" to principal, "entries" to surveyEntries)))
     }
 }
 

@@ -151,4 +151,16 @@ object UserTable {
         return result
     }
 
+    fun setAdmin(account: String): Int? {
+        var result: Int?
+        Database.getConnection().use { con ->
+            con.prepareStatement(
+                "UPDATE $TABLE_NAME SET $COL_ROLE = 1 WHERE $COL_ACCOUNT = ?;"
+            ).use { st ->
+                st.setString(1, account)
+                result = st.executeUpdate()
+            }
+        }
+        return result
+    }
 }

@@ -65,7 +65,7 @@ fun Application.module(testing: Boolean = false) {
     install(Sessions) {
         cookie<UserPrincipal>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 60
+            cookie.maxAgeInSeconds = 600
         }
     }
 
