@@ -14,12 +14,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.velocity.VelocityContent
 
-fun Route.survey() {
-    getSurveyId()
-    createSurvey()
-    getAllSurvey()
-    getResults()
-}
 
 fun Route.getAllSurvey() {
     get("/") {

@@ -1,12 +1,8 @@
 package com.example.survey.database.table
 
-import com.example.survey.model.User
-import com.example.survey.api.AuthCredential
 import com.example.survey.database.Database
-import java.sql.Connection
-import java.sql.ResultSet
+import com.example.survey.model.UserPrincipal
 import java.sql.SQLException
-import java.sql.Statement
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -34,8 +30,8 @@ object UserTable {
         }
     }
 
-    fun getByCredential(credential: AuthCredential): User? {
-        var result: User? = null
+    fun getByCredential(userName: String, password: String): UserPrincipal? {
+        var result: UserPrincipal? = null
 
         try {
             Database.getConnection().use { con ->
@@ -43,12 +39,12 @@ object UserTable {
                 con.prepareStatement("SELECT * FROM $TABLE_NAME WHERE $COL_USER_NAME = ? AND $COL_PASSWORD = ?")
                     .use { st ->
 
-                        st.setString(1, credential.name)
-                        st.setString(2, credential.password)
+                        st.setString(1, userName)
+                        st.setString(2, password)
 
                         st.executeQuery().use { rs ->
                             if (rs.next()) {
-                                result = User(rs.getString(COL_USER_NAME))
+                                result = UserPrincipal(rs.getString(COL_USER_NAME))
                             }
                         }
                     }
@@ -61,8 +57,8 @@ object UserTable {
         return result
     }
 
-    fun getByUserName(userName: String): User? {
-        var result: User? = null
+    fun getByUserName(userName: String): UserPrincipal? {
+        var result: UserPrincipal? = null
 
         try {
             Database.getConnection().use { con ->
@@ -73,7 +69,7 @@ object UserTable {
 
                         st.executeQuery().use { rs ->
                             if (rs.next()) {
-                                result = User(rs.getString(COL_USER_NAME))
+                                result = UserPrincipal(rs.getString(COL_USER_NAME))
                             }
                         }
                     }
@@ -85,8 +81,8 @@ object UserTable {
         return result
     }
 
-    fun getAllUsers(): List<User> {
-        val result: ArrayList<User> = ArrayList()
+    fun getAllUsers(): List<UserPrincipal> {
+        val result: ArrayList<UserPrincipal> = ArrayList()
 
         try {
             Database.getConnection().use { con ->
@@ -95,7 +91,7 @@ object UserTable {
                     st.executeQuery().use { rs ->
                         while (rs.next()) {
                             result.add(
-                                User(
+                                UserPrincipal(
                                     rs.getString(COL_USER_NAME)
                                 )
                             )
