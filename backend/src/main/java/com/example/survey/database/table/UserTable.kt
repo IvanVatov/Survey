@@ -59,22 +59,34 @@ object UserTable {
 
     fun updateUser(
         name: String,
-        password: String,
         avatar: String,
-        role: Int,
         account: String
     ): Int {
         Database.getConnection().use { con ->
 
-            con.prepareStatement("UPDATE $TABLE_NAME SET $COL_NAME = ?, $COL_PASSWORD = ?, $COL_AVATAR = ?, $COL_ROLE = ? WHERE $COL_ACCOUNT = ?")
+            con.prepareStatement("UPDATE $TABLE_NAME SET $COL_NAME = ?, $COL_AVATAR = ? WHERE $COL_ACCOUNT = ?")
                 .use { ps ->
 
                     ps.setString(1, name)
+                    ps.setString(2, avatar)
+                    ps.setString(3, account)
 
-                    ps.setString(2, password)
-                    ps.setString(3, avatar)
-                    ps.setInt(4, role)
-                    ps.setString(5, account)
+                    return ps.executeUpdate()
+                }
+        }
+    }
+
+    fun updateUserPassword(
+        password: String,
+        account: String
+    ): Int {
+        Database.getConnection().use { con ->
+
+            con.prepareStatement("UPDATE $TABLE_NAME SET $COL_PASSWORD = ? WHERE $COL_ACCOUNT = ?")
+                .use { ps ->
+
+                    ps.setString(1, password)
+                    ps.setString(2, account)
 
                     return ps.executeUpdate()
                 }
@@ -99,7 +111,7 @@ object UserTable {
         try {
             Database.getConnection().use { con ->
 
-                con.prepareStatement("SELECT * FROM $TABLE_NAME WHERE $COL_NAME = ? AND $COL_PASSWORD = ?")
+                con.prepareStatement("SELECT * FROM $TABLE_NAME WHERE $COL_ACCOUNT = ? AND $COL_PASSWORD = ?")
                     .use { st ->
 
                         st.setString(1, userName)
@@ -125,26 +137,23 @@ object UserTable {
         return result
     }
 
-    fun getByUserName(userName: String): UserPrincipal? {
+    fun getByAccount(account: String): UserPrincipal? {
         var result: UserPrincipal? = null
 
         Database.getConnection().use { con ->
-            con.prepareStatement("SELECT * FROM $TABLE_NAME WHERE $COL_NAME = ?")
-                .use { st ->
-
-                    st.setString(1, userName)
-
-                    st.executeQuery().use { rs ->
-                        if (rs.next()) {
-                            result = UserPrincipal(
-                                rs.getString(COL_ACCOUNT),
-                                rs.getString(COL_NAME),
-                                rs.getString(COL_AVATAR),
-                                rs.getInt(COL_ROLE)
-                            )
-                        }
+            con.prepareStatement("SELECT * FROM $TABLE_NAME WHERE $COL_ACCOUNT = ?").use { st ->
+                st.setString(1, account)
+                st.executeQuery().use { rs ->
+                    if (rs.next()) {
+                        result = UserPrincipal(
+                            rs.getString(COL_ACCOUNT),
+                            rs.getString(COL_NAME),
+                            rs.getString(COL_AVATAR),
+                            rs.getInt(COL_ROLE)
+                        )
                     }
                 }
+            }
         }
 
         return result
@@ -174,13 +183,14 @@ object UserTable {
         return result
     }
 
-    fun setAdmin(account: String): Int? {
+    fun setRole(role: Int, account: String): Int? {
         var result: Int?
         Database.getConnection().use { con ->
             con.prepareStatement(
-                "UPDATE $TABLE_NAME SET $COL_ROLE = 1 WHERE $COL_ACCOUNT = ?;"
+                "UPDATE $TABLE_NAME SET $COL_ROLE = ? WHERE $COL_ACCOUNT = ?;"
             ).use { st ->
-                st.setString(1, account)
+                st.setInt(1, role)
+                st.setString(2, account)
                 result = st.executeUpdate()
             }
         }

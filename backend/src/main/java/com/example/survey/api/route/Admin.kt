@@ -14,7 +14,7 @@ fun Route.apiSetAdmin() {
 
         val admin = call.receive<Admin>()
 
-        val result = UserTable.setAdmin(admin.account)
+        val result = UserTable.setRole(1, admin.account)
 
         call.respond(Response(result, null, true))
     }

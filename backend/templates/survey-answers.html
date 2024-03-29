@@ -3,34 +3,44 @@
 <div class="content-wrapper container">
 
     <div class="page-heading">
-        <h3>Surveys</h3>
+        <h3>$survey.name</h3>
     </div>
     <div class="page-content">
 
 
-<section class="section">
+        <section class="section">
 
-    #foreach($question in $survey.questions)
+            #foreach($question in $survey.questions)
 
-    <div class="row">
-        <div class="col-md-12 p-2 pt-3"><h4>$question.question</h4></div>
+            <div class="row" id="basic-table">
+                <div class="col-12 col-md-12">
 
-        #foreach($answer in $question.answers)
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">$question.question</h4>
+                        </div>
+                        <div class="card-content">
+                            <!-- Table with outer spacing -->
+                            <div class="table-responsive">
+                                <table class="table table-lg">
+                                    <tbody>
+                                    #foreach($answer in $question.answers)
+                                    <tr>
+                                        <td class="text-bold-500">$answer.answer</td>
+                                        <td class="text-bold-500">$answer.count</td>
+                                    </tr>
+                                    #end
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            #end
 
-        <div class="row">
-            <div style="text-align: right" ; class="col-md-6 p-2">$answer.answer</div>
 
-            <div style="text-align: left" ; class="col-md-6 p-2"><b>$answer.count</b></div>
-        </div>
-
-        #end
-    </div>
-
-    #end
-
-
-
-</section>
+        </section>
 
     </div>
 

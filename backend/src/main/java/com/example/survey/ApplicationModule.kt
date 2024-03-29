@@ -65,14 +65,14 @@ fun Application.module(testing: Boolean = false) {
     install(Sessions) {
         cookie<UserPrincipal>("user_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 600
+            cookie.maxAgeInSeconds = 7200 // 2 hours
         }
     }
 
     install(Authentication) {
         session<UserPrincipal> {
             validate { session ->
-                if (session.account != null) {
+                if (session.role >= 0) {
                     session
                 } else {
                     null

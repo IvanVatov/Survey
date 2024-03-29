@@ -7,6 +7,7 @@ import com.example.survey.model.Response
 import com.example.survey.model.Survey
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
+import io.ktor.server.plugins.MissingRequestParameterException
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -32,7 +33,9 @@ fun Route.apiCreateSurvey() {
 
         val survey = call.receive<Survey>()
 
-        val surveyId = SurveyTable.insert(survey)
+        val owner = call.request.queryParameters["owner"] ?: throw MissingRequestParameterException("owner")
+
+        val surveyId = SurveyTable.insert(survey, owner)
 
         surveyId?.let { sId ->
             survey.questions.forEach { question ->
