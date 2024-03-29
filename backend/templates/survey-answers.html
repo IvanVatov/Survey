@@ -1,0 +1,39 @@
+#parse("header.html")
+
+<div class="content-wrapper container">
+
+    <div class="page-heading">
+        <h3>Surveys</h3>
+    </div>
+    <div class="page-content">
+
+
+<section class="section">
+
+    #foreach($question in $survey.questions)
+
+    <div class="row">
+        <div class="col-md-12 p-2 pt-3"><h4>$question.question</h4></div>
+
+        #foreach($answer in $question.answers)
+
+        <div class="row">
+            <div style="text-align: right" ; class="col-md-6 p-2">$answer.answer</div>
+
+            <div style="text-align: left" ; class="col-md-6 p-2"><b>$answer.count</b></div>
+        </div>
+
+        #end
+    </div>
+
+    #end
+
+
+
+</section>
+
+    </div>
+
+</div>
+
+#parse("footer.html")

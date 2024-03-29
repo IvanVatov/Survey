@@ -30,12 +30,11 @@
                             <tr>
                                 <td class="text-bold-500">$item.id</td>
                                 <td class="text-bold-500">$item.name</td>
-                                <td><a href="#"><i
-                                        class="badge-circle badge-circle-light-secondary font-medium-1"
-                                        data-feather="mail"></i></a>
-                                    <a href="#"><i
-                                            class="badge-circle badge-circle-light-secondary font-medium-1"
-                                            data-feather="mail"></i></a>
+                                <td>
+                                    <a href="/survey/result?id=$item.id" class="btn icon btn-info"><i class="bi bi-eye"></i></a>
+                                    <a href="#" class="btn icon btn-primary"><i class="bi bi-pencil"></i></a>
+                                    <a href="/survey/delete?id=$item.id" class="btn icon btn-danger"><i class="bi bi-trash"></i></a>
+
                                 </td>
                             </tr>
 

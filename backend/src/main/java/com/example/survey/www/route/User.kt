@@ -12,6 +12,7 @@ import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import io.ktor.server.velocity.VelocityContent
@@ -40,6 +41,14 @@ fun Route.login() {
 
         call.respond(VelocityContent("auth-login.html", mutableMapOf()))
     }
+}
+
+fun Route.logout() {
+    get("/logout") {
+        call.sessions.clear<UserPrincipal>()
+        call.respondRedirect("/login")
+    }
+
 }
 
 fun Route.register() {

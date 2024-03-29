@@ -1,16 +1,19 @@
 package com.example.survey.www.route
 
-import com.example.survey.model.Survey
-import com.example.survey.model.Response
 import com.example.survey.database.table.AnswerTable
 import com.example.survey.database.table.QuestionTable
 import com.example.survey.database.table.SurveyTable
+import com.example.survey.model.Response
+import com.example.survey.model.Survey
 import com.example.survey.model.UserPrincipal
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.auth.principal
+import io.ktor.server.plugins.MissingRequestParameterException
+import io.ktor.server.plugins.NotFoundException
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
@@ -19,14 +22,14 @@ import io.ktor.server.velocity.VelocityContent
 
 fun Route.dashboard() {
     get("/") {
-        val surveyEntries = SurveyTable.getAll()
+        val dashboardInfo = SurveyTable.getDashboardInfo()
 
         val principal = call.principal<UserPrincipal>() ?: throw Exception()
 
         call.respond(
             VelocityContent(
                 "index.html",
-                mutableMapOf("user" to principal, "entries" to surveyEntries)
+                mutableMapOf("user" to principal, "dashboard" to dashboardInfo)
             )
         )
     }
@@ -48,13 +51,35 @@ fun Route.surveyList() {
     }
 }
 
+fun Route.surveyDelete() {
+    get("/survey/delete") {
 
-fun Route.getResults() {
-    get("/results") {
-        val id = call.request.queryParameters["id"]?.toInt() ?: 1
-        val survey =
-            SurveyTable.getById(id) ?: throw Throwable("Implement null")//  TODO IMPLEMENT NULL
-        call.respond(VelocityContent("results.html", mutableMapOf("survey" to survey)))
+        val principal = call.principal<UserPrincipal>() ?: throw Exception()
+
+        val deleteId = call.request.queryParameters["id"]?.toInt() ?: throw Exception()
+
+        if (principal.role == 1) {
+            SurveyTable.deleteAdmin(deleteId)
+        } else if (principal.role == 0) {
+            SurveyTable.deleteUser(deleteId, principal.account)
+        }
+
+        call.respondRedirect("/survey/list")
+    }
+}
+
+
+fun Route.surveyResults() {
+    get("/survey/result") {
+        val principal = call.principal<UserPrincipal>() ?: throw Exception()
+        val id = call.request.queryParameters["id"]?.toInt() ?: throw MissingRequestParameterException("id")
+        val survey = SurveyTable.getById(id) ?: throw NotFoundException()
+        call.respond(
+            VelocityContent(
+                "survey-answers.html",
+                mutableMapOf("user" to principal, "survey" to survey)
+            )
+        )
     }
 }
 
@@ -74,9 +99,11 @@ fun Route.getSurveyId() {
 fun Route.createSurvey() {
     post("/survey/create") {
 
+        val principal = call.principal<UserPrincipal>() ?: throw Exception()
+
         val survey = call.receive<Survey>()
 
-        val surveyId = SurveyTable.insert(survey)
+        val surveyId = SurveyTable.insert(survey, principal.account)
 
         surveyId?.let { sId ->
             survey.questions.forEach { question ->
