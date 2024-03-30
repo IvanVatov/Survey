@@ -38,7 +38,7 @@ fun Application.module(testing: Boolean = false) {
         status(HttpStatusCode.Forbidden) { call, _ ->
             call.respond(VelocityContent("error-403.html", mutableMapOf()))
         }
-        status(HttpStatusCode.NotFound) { call, _ ->
+        status(HttpStatusCode.NotFound, HttpStatusCode.MethodNotAllowed) { call, _ ->
             call.respond(VelocityContent("error-404.html", mutableMapOf()))
         }
         status(HttpStatusCode.InternalServerError) { call, _ ->

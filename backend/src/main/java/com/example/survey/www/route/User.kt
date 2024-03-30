@@ -1,10 +1,7 @@
 package com.example.survey.www.route
 
-import com.example.survey.database.table.SurveyTable
-import com.example.survey.model.Response
 import com.example.survey.database.table.UserTable
 import com.example.survey.model.UserPrincipal
-import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.auth.principal
 import io.ktor.server.plugins.MissingRequestParameterException
@@ -139,17 +136,6 @@ fun Route.myAccount() {
 
         call.sessions.set(principal.copy(name = name, avatar = avatar))
         call.respondRedirect("/account")
-    }
-}
-
-fun Route.getId() {
-    get("/user") {
-        call.request.queryParameters["id"]?.let {
-            call.respond(Response("asd", null, true))
-        } ?: call.respond(
-            HttpStatusCode.BadRequest,
-            Response<Boolean>(null, "Parameter id is required", false)
-        )
     }
 }
 

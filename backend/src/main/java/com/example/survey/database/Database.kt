@@ -39,6 +39,11 @@ object Database {
     }
 
     private fun createTables() {
+        getConnection().use { con ->
+            con.prepareStatement("PRAGMA foreign_keys = ON;").use { ps ->
+                ps.execute()
+            }
+        }
         UserTable.createTable()
         SurveyTable.createTable()
         QuestionTable.createTable()

@@ -10,12 +10,12 @@ object UserTable {
 
     private val logger = Logger.getLogger(UserTable::class.java.simpleName)
 
-    private const val TABLE_NAME = "user"
-    private const val COL_NAME = "name"
-    private const val COL_ACCOUNT = "account"
-    private const val COL_PASSWORD = "password"
-    private const val COL_AVATAR = "avatar"
-    private const val COL_ROLE = "role"
+   const val TABLE_NAME = "user"
+   const val COL_NAME = "name"
+   const val COL_ACCOUNT = "account"
+   const val COL_PASSWORD = "password"
+   const val COL_AVATAR = "avatar"
+   const val COL_ROLE = "role"
 
     internal fun createTable() {
         try {

@@ -27,8 +27,8 @@ object UserAnswerTable {
                 "CREATE TABLE $TABLE_NAME " +
                         "($COL_USER_SURVEY_ID INTEGER NOT NULL, " +
                         "$COL_ANSWER_ID INTEGER NOT NULL, " +
-                        "FOREIGN KEY ($COL_USER_SURVEY_ID) REFERENCES ${UserSurveyTable.TABLE_NAME} (${UserSurveyTable.COL_ID}), " +
-                        "FOREIGN KEY ($COL_ANSWER_ID) REFERENCES ${AnswerTable.TABLE_NAME} (${AnswerTable.COL_ID}));"
+                        "FOREIGN KEY ($COL_USER_SURVEY_ID) REFERENCES ${UserSurveyTable.TABLE_NAME} (${UserSurveyTable.COL_ID}) ON DELETE CASCADE, " +
+                        "FOREIGN KEY ($COL_ANSWER_ID) REFERENCES ${AnswerTable.TABLE_NAME} (${AnswerTable.COL_ID}) ON DELETE CASCADE);"
             )
             st.executeUpdate()
         } catch (e: SQLException) {

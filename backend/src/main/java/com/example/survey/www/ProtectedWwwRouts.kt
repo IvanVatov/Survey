@@ -3,6 +3,7 @@ package com.example.survey.www
 import com.example.survey.www.route.dashboard
 import com.example.survey.www.route.logout
 import com.example.survey.www.route.myAccount
+import com.example.survey.www.route.surveyCreate
 import com.example.survey.www.route.surveyDelete
 import com.example.survey.www.route.surveyList
 import com.example.survey.www.route.surveyResults
@@ -21,4 +22,5 @@ fun Route.protectedWwwRoutes() {
     userList()
     userDetails()
     userDelete()
+    surveyCreate()
 }

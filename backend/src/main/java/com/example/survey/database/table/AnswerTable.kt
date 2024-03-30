@@ -29,8 +29,7 @@ object AnswerTable {
                         "($COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "$COL_QUESTION_ID INTEGER NOT NULL, " +
                         "$COL_ANSWER TEXT NOT NULL, " +
-                        "FOREIGN KEY ($COL_QUESTION_ID) REFERENCES ${QuestionTable.TABLE_NAME} (${QuestionTable.COL_ID})" +
-                        ");"
+                        "FOREIGN KEY ($COL_QUESTION_ID) REFERENCES ${QuestionTable.TABLE_NAME} (${QuestionTable.COL_ID}) ON DELETE CASCADE);"
             )
             st.executeUpdate()
         } catch (e: SQLException) {

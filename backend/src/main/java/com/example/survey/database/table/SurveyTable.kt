@@ -32,7 +32,8 @@ object SurveyTable {
                 "CREATE TABLE $TABLE_NAME (" +
                         "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         "$COL_OWNER TEXT NOT NULL, " +
-                        "$COL_NAME TEXT NOT NULL);"
+                        "$COL_NAME TEXT NOT NULL, " +
+                        "FOREIGN KEY ($COL_OWNER) REFERENCES ${UserTable.TABLE_NAME} (${UserTable.COL_ACCOUNT}) ON DELETE CASCADE);"
             )
             st.executeUpdate()
         } catch (e: SQLException) {
