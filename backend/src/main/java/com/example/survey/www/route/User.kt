@@ -36,6 +36,14 @@ fun Route.login() {
                 call.sessions.set(user)
                 call.respondRedirect("/")
                 return@post
+            } else {
+                call.respond(
+                    VelocityContent(
+                        "auth-login.html",
+                        mutableMapOf("error" to "Invalid account or password.")
+                    )
+                )
+                return@post
             }
 
         }
@@ -67,17 +75,45 @@ fun Route.register() {
 
         val password2 = params["password2"] ?: throw MissingRequestParameterException("password2")
 
-        if (password == password2) {
+
+        var error: String? = null
+
+        if (password.isNotBlank() && password != password2) {
+            error = "Passwords doesn't match."
+        } else if (name.isBlank()) {
+            error = "Name is required field."
+        } else if (account.isBlank()) {
+            error = "Account is required field"
+        }
+
+        if (error != null) {
+            call.respond(
+                VelocityContent(
+                    "auth-register.html",
+                    mutableMapOf("error" to error)
+                )
+            )
+            return@post
+        } else {
 
             val avatar = "/assets/compiled/jpg/${Random.nextInt(8) + 1}.jpg"
-            val user = UserTable.insert(name, account, password, avatar)
 
-            if (user != null) {
-                call.sessions.set(UserPrincipal(account, name, avatar, 0))
-                call.respondRedirect("/")
+            try {
+                val user = UserTable.insert(name, account, password, avatar)
+                if (user != null) {
+                    call.sessions.set(UserPrincipal(account, name, avatar, 0))
+                    call.respondRedirect("/")
+                    return@post
+                }
+            } catch (e: Exception) {
+                call.respond(
+                    VelocityContent(
+                        "auth-register.html",
+                        mutableMapOf("error" to "Account already exist.")
+                    )
+                )
                 return@post
             }
-
         }
 
         call.respond(VelocityContent("auth-register.html", mutableMapOf()))

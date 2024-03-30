@@ -150,7 +150,7 @@ object SurveyTable {
 
         Database.getConnection().use { con ->
             con.prepareStatement(
-                "SELECT s.$COL_ID, s.$COL_NAME, s.$COL_OWNER " +
+                "SELECT s.$COL_ID, s.$COL_NAME, s.$COL_OWNER, " +
                         "q.${QuestionTable.COL_ID} AS 'qId', q.${QuestionTable.COL_QUESTION}, q.${QuestionTable.COL_IS_SINGLE}, " +
                         "a.${AnswerTable.COL_ID} AS aId, a.${AnswerTable.COL_ANSWER}, CASE WHEN uac.cnt IS NULL THEN 0 ELSE uac.cnt END AS cnt " +
                         "FROM $TABLE_NAME s " +
