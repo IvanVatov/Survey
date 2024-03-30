@@ -33,6 +33,16 @@ fun Route.login() {
             val user = UserTable.getByCredential(userName, password)
 
             if (user != null) {
+                if (user.role < 0) {
+                    call.respond(
+                        VelocityContent(
+                            "auth-login.html",
+                            mutableMapOf("error" to "Your account is suspended.")
+                        )
+                    )
+                    return@post
+                }
+
                 call.sessions.set(user)
                 call.respondRedirect("/")
                 return@post
