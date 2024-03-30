@@ -107,6 +107,7 @@ object SurveyTable {
 
     fun getDashboardInfo(): DashboardInfo {
 
+        var users = 0
         var surveys = 0
         var questions = 0
         var answers = 0
@@ -116,6 +117,8 @@ object SurveyTable {
 
             con.prepareStatement(
                 "SELECT '$TABLE_NAME' AS name, COUNT(*) AS count FROM $TABLE_NAME " +
+                        "UNION ALL " +
+                        "SELECT '${UserTable.TABLE_NAME}', COUNT(*) FROM ${UserTable.TABLE_NAME} " +
                         "UNION ALL " +
                         "SELECT '${QuestionTable.TABLE_NAME}', COUNT(*) FROM ${QuestionTable.TABLE_NAME} " +
                         "UNION ALL " +
@@ -127,6 +130,7 @@ object SurveyTable {
                     while (rs.next()) {
                         when (rs.getString("name")) {
                             TABLE_NAME -> surveys = rs.getInt("count")
+                            UserTable.TABLE_NAME -> users = rs.getInt("count")
                             QuestionTable.TABLE_NAME -> questions = rs.getInt("count")
                             AnswerTable.TABLE_NAME -> answers = rs.getInt("count")
                             UserAnswerTable.TABLE_NAME -> answered = rs.getInt("count")
@@ -135,7 +139,7 @@ object SurveyTable {
                 }
             }
         }
-        return DashboardInfo(surveys, questions, answers, answered)
+        return DashboardInfo(users, surveys, questions, answers, answered)
     }
 
     fun getById(surveyId: Int): Survey? {
@@ -146,7 +150,7 @@ object SurveyTable {
 
         Database.getConnection().use { con ->
             con.prepareStatement(
-                "SELECT s.$COL_ID, s.$COL_NAME, " +
+                "SELECT s.$COL_ID, s.$COL_NAME, s.$COL_OWNER " +
                         "q.${QuestionTable.COL_ID} AS 'qId', q.${QuestionTable.COL_QUESTION}, q.${QuestionTable.COL_IS_SINGLE}, " +
                         "a.${AnswerTable.COL_ID} AS aId, a.${AnswerTable.COL_ANSWER}, CASE WHEN uac.cnt IS NULL THEN 0 ELSE uac.cnt END AS cnt " +
                         "FROM $TABLE_NAME s " +
@@ -168,6 +172,7 @@ object SurveyTable {
                             SurveyDbHelper(
                                 rs.getInt(COL_ID),
                                 rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
                                 rs.getInt("qId"),
                                 rs.getString(QuestionTable.COL_QUESTION),
                                 rs.getInt(QuestionTable.COL_IS_SINGLE),
@@ -210,7 +215,7 @@ object SurveyTable {
 
             questions.add(Question(questionId, question, isSingle == 1, answers))
 
-            result = Survey(first.id, first.name, questions)
+            result = Survey(first.id, first.name, first.owner, questions)
 
         }
 
@@ -222,7 +227,7 @@ object SurveyTable {
 
         Database.getConnection().use { con ->
             con.prepareStatement(
-                "SELECT $COL_ID, $COL_NAME " +
+                "SELECT $COL_ID, $COL_NAME, $COL_OWNER " +
                         "FROM $TABLE_NAME " +
                         "ORDER BY $COL_ID;"
             ).use { st ->
@@ -234,6 +239,7 @@ object SurveyTable {
                             Survey(
                                 rs.getInt(COL_ID),
                                 rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
                                 emptyList()
                             )
                         )
@@ -250,7 +256,7 @@ object SurveyTable {
 
         Database.getConnection().use { con ->
             con.prepareStatement(
-                "SELECT $COL_ID, $COL_NAME " +
+                "SELECT $COL_ID, $COL_NAME, $COL_OWNER " +
                         "FROM $TABLE_NAME " +
                         "WHERE $COL_OWNER = ? " +
                         "ORDER BY $COL_ID;"
@@ -264,6 +270,7 @@ object SurveyTable {
                             Survey(
                                 rs.getInt(COL_ID),
                                 rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
                                 emptyList()
                             )
                         )
@@ -278,6 +285,7 @@ object SurveyTable {
     private class SurveyDbHelper(
         val id: Int,
         val name: String,
+        val owner: String,
         val questionId: Int,
         val question: String,
         val isSingle: Int,

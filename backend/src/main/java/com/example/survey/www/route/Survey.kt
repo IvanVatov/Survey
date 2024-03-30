@@ -43,7 +43,11 @@ fun Route.surveyList() {
 
         val principal = call.principal<UserPrincipal>() ?: throw Exception()
 
-        val surveyEntries = SurveyTable.getAll()
+        val surveyEntries = if (principal.role == 1) {
+            SurveyTable.getAll()
+        } else {
+            SurveyTable.getAllUser(principal.account)
+        }
 
         call.respond(
             VelocityContent(
@@ -192,7 +196,7 @@ fun Route.surveyCreate() {
         }
 
         if (!name.isNullOrBlank()) {
-            val survey = Survey(0, name, emptyList())
+            val survey = Survey(0, name, principal.account, emptyList())
             val json = jsonInstance.encodeToString(Survey.serializer(), survey)
             call.respond(
                 VelocityContent(

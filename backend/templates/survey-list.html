@@ -20,6 +20,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>NAME</th>
+                                <th>OWNER</th>
                                 <th>ACTIONS</th>
                             </tr>
                             </thead>
@@ -30,6 +31,7 @@
                             <tr>
                                 <td class="text-bold-500">$item.id</td>
                                 <td class="text-bold-500">$item.name</td>
+                                <td class="text-bold-500"><a href="/user/details?account=$item.owner" class="btn btn-outline-primary">$item.owner</a></td>
                                 <td>
                                     <a href="/survey/result?id=$item.id" class="btn icon btn-info"><i class="bi bi-eye"></i></a>
                                     <a href="/survey/delete?id=$item.id" class="btn icon btn-danger"><i class="bi bi-trash"></i></a>

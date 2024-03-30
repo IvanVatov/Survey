@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class Survey(
     val id: Int,
     val name: String,
+    val owner: String? = null,
     val questions: List<Question>
 )
