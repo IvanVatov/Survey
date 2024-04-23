@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey</title>
+
+
+    <link rel="shortcut icon" href="/assets/compiled/svg/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon"
+          href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEqSURBVHgB7ZRBTsMwEEVn3MI6R2jpihX0BCSoVGLHEeAIOQG5Ab0CJ2BPkdyDUJojhCUo+GMHJypVWie1WnXRt7HHI33PeGZMdMQBl5vw9f2ehXgiICAfmFMQJ7NR/9mYojoX4tFb3AD0GGpSmt1lh1nkzYDJg2g6h16qQAXtmG7dYfT2sSgzKtDvKkdnfdqC+gwUNtstqM1AjgeNow3lIuAcL7ofe+h8Din/7/eqgRWXukPCdVm2rsH1dJ4Q6EKdiLiInHCp7RQ/39FsPMx0F7kvKKLhFduih+iKGCHn6s4e/InfnqfUNINNNUD+9cCdU2ne3CVuaF0DI2ZEoWjiEjdsNQdWNKYGHP4cuNjnX8SZ7pHA/oZ+6O4qt1UGgIqXHR5kECKhI035BUoFkoqSC224AAAAAElFTkSuQmCC"
+          type="image/png">
+    <link rel="stylesheet" href="/assets/compiled/css/app.css">
+    <link rel="stylesheet" href="/assets/compiled/css/app-dark.css">
+    <link rel="stylesheet" href="/assets/compiled/css/iconly.css">
+</head>
+
+<body>
+<script src="/assets/static/js/initTheme.js"></script>
+<div id="app">
+    <div id="main" class="layout-horizontal">
+        <header class="mb-5">
+            <div class="header-top">
+                <div class="container">
+                    <div class="logo">
+                        <a href="/"><img src="/assets/compiled/svg/logo.svg"
+                                         alt="Logo"></a>
+                    </div>
+                    <div class="header-top-right">
+
+                        <div class="dropdown">
+                            <a href="#" id="topbarUserDropdown"
+                               class="user-dropdown d-flex align-items-center dropend dropdown-toggle "
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="avatar avatar-md2">
+                                    <img src="$user.avatar" alt="Avatar">
+                                </div>
+                                <div class="text">
+                                    <h6 class="user-dropdown-name">$user.name</h6>
+                                    <p class="user-dropdown-status text-sm text-muted">
+                                        #if ($user.role == 1)
+                                        Admin
+                                        #else
+                                        Member
+                                        #end
+                                    </p>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+                                aria-labelledby="topbarUserDropdown">
+                                <li><a class="dropdown-item" href="/account">My Account</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Burger button responsive -->
+                        <a href="#" class="burger-btn d-block d-xl-none">
+                            <i class="bi bi-justify fs-3"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <nav class="main-navbar">
+                <div class="container">
+                    <ul>
+                        <li class="menu-item  ">
+                            <a href="/" class='menu-link'>
+                                <span><i class="bi bi-grid-fill"></i> Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="menu-item  has-sub">
+                            <a href="#" class='menu-link'>
+                                <span><i class="bi bi-stack"></i> Surveys</span>
+                            </a>
+                            <div class="submenu ">
+                                <div class="submenu-group-wrapper">
+                                    <ul class="submenu-group">
+                                        <li class="subsubmenu-item ">
+                                            <a href="/survey/list" class="subsubmenu-link">List</a>
+                                        </li>
+
+                                        <li class="subsubmenu-item ">
+                                            <a href="/survey/create"
+                                               class="subsubmenu-link">Create new</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        #if ($user.role == 1)
+                        <li class="menu-item  ">
+                            <a href="/user/list" class='menu-link'>
+                                <span><i class="bi bi-people-fill"></i> Users</span>
+                            </a>
+                        </li>
+                        #end
+                    </ul>
+                </div>
+            </nav>
+
+        </header>

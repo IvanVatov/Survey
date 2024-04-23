@@ -1,42 +1,22 @@
 package com.example.survey.api.route
 
-import com.example.model.Survey
-import com.example.survey.api.Response
-import com.example.survey.database.table.*
-import io.ktor.application.*
-import io.ktor.freemarker.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import com.example.survey.database.table.AnswerTable
+import com.example.survey.database.table.QuestionTable
+import com.example.survey.database.table.SurveyTable
+import com.example.survey.model.Response
+import com.example.survey.model.Survey
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.plugins.MissingRequestParameterException
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 
-fun Application.survey() {
-    routing {
-        getSurveyId()
-        createSurvey()
-        getAllSurvey()
-        getResults()
 
-    }
-}
-
-fun Route.getAllSurvey() {
-    get("/") {
-        val surveyEntries = SurveyTable.getAll()
-        call.respond(FreeMarkerContent("index.ftl", mapOf("entries" to surveyEntries), ""))
-    }
-}
-
-fun Route.getResults() {
-    get("/results") {
-        val id = call.request.queryParameters["id"]?.toInt() ?: 1
-        val survey = SurveyTable.getById(id)
-        call.respond(FreeMarkerContent("results.ftl", mapOf("survey" to survey), ""))
-    }
-}
-
-fun Route.getSurveyId() {
-    get("/survey") {
+fun Route.apiGetSurveyId() {
+    get("/api/survey") {
         call.request.queryParameters["id"]?.let {
             call.respond(Response(SurveyTable.getById(it.toInt()), null, true))
 
@@ -48,12 +28,14 @@ fun Route.getSurveyId() {
     }
 }
 
-fun Route.createSurvey() {
-    post("/survey/create") {
+fun Route.apiCreateSurvey() {
+    post("/api/survey/create") {
 
         val survey = call.receive<Survey>()
 
-        val surveyId = SurveyTable.insert(survey)
+        val owner = call.request.queryParameters["owner"] ?: throw MissingRequestParameterException("owner")
+
+        val surveyId = SurveyTable.insert(survey, owner)
 
         surveyId?.let { sId ->
             survey.questions.forEach { question ->

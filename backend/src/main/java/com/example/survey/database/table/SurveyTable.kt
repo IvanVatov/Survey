@@ -1,9 +1,10 @@
 package com.example.survey.database.table
 
-import com.example.model.Answer
-import com.example.model.Question
-import com.example.model.Survey
+import com.example.survey.model.Answer
+import com.example.survey.model.Question
+import com.example.survey.model.Survey
 import com.example.survey.database.Database
+import com.example.survey.model.DashboardInfo
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -16,7 +17,9 @@ object SurveyTable {
     val logger = Logger.getLogger(SurveyTable::class.java.simpleName)
 
     const val TABLE_NAME = "survey"
+
     const val COL_ID = "id"
+    const val COL_OWNER = "owner"
     const val COL_NAME = "name"
 
     internal fun createTable() {
@@ -28,7 +31,9 @@ object SurveyTable {
             st = con.prepareStatement(
                 "CREATE TABLE $TABLE_NAME (" +
                         "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "$COL_NAME TEXT NOT NULL);"
+                        "$COL_OWNER TEXT NOT NULL, " +
+                        "$COL_NAME TEXT NOT NULL, " +
+                        "FOREIGN KEY ($COL_OWNER) REFERENCES ${UserTable.TABLE_NAME} (${UserTable.COL_ACCOUNT}) ON DELETE CASCADE);"
             )
             st.executeUpdate()
         } catch (e: SQLException) {
@@ -40,7 +45,7 @@ object SurveyTable {
 
     }
 
-    fun insert(survey: Survey): Int? {
+    fun insert(survey: Survey, owner: String): Int? {
         var result: Int? = null
 
         var con: Connection? = null
@@ -51,9 +56,10 @@ object SurveyTable {
             con = Database.getConnection()
 
             st =
-                con.prepareStatement("INSERT INTO $TABLE_NAME ($COL_NAME) VALUES (?)")
+                con.prepareStatement("INSERT INTO $TABLE_NAME ($COL_OWNER, $COL_NAME) VALUES (?, ?)")
 
-            st.setString(1, survey.name)
+            st.setString(1, owner)
+            st.setString(2, survey.name)
 
             st.executeUpdate()
 
@@ -73,19 +79,78 @@ object SurveyTable {
         return result
     }
 
+    fun deleteAdmin(surveyId: Int): Int {
+        Database.getConnection().use { con ->
+
+            con.prepareStatement("DELETE FROM $TABLE_NAME WHERE $COL_ID = ?;").use { st ->
+
+                st.setInt(1, surveyId)
+
+                return st.executeUpdate()
+            }
+        }
+    }
+
+    fun deleteUser(surveyId: Int, account: String): Int {
+        Database.getConnection().use { con ->
+
+            con.prepareStatement("DELETE FROM $TABLE_NAME WHERE $COL_ID = ? AND $COL_OWNER = ?;")
+                .use { st ->
+
+                    st.setInt(1, surveyId)
+                    st.setString(2, account)
+
+                    return st.executeUpdate()
+                }
+        }
+    }
+
+    fun getDashboardInfo(): DashboardInfo {
+
+        var users = 0
+        var surveys = 0
+        var questions = 0
+        var answers = 0
+        var answered = 0
+
+        Database.getConnection().use { con ->
+
+            con.prepareStatement(
+                "SELECT '$TABLE_NAME' AS name, COUNT(*) AS count FROM $TABLE_NAME " +
+                        "UNION ALL " +
+                        "SELECT '${UserTable.TABLE_NAME}', COUNT(*) FROM ${UserTable.TABLE_NAME} " +
+                        "UNION ALL " +
+                        "SELECT '${QuestionTable.TABLE_NAME}', COUNT(*) FROM ${QuestionTable.TABLE_NAME} " +
+                        "UNION ALL " +
+                        "SELECT '${AnswerTable.TABLE_NAME}', COUNT(*) FROM ${AnswerTable.TABLE_NAME} " +
+                        "UNION ALL " +
+                        "SELECT '${UserAnswerTable.TABLE_NAME}', COUNT(*) FROM ${UserAnswerTable.TABLE_NAME};"
+            ).use { st ->
+                st.executeQuery().use { rs ->
+                    while (rs.next()) {
+                        when (rs.getString("name")) {
+                            TABLE_NAME -> surveys = rs.getInt("count")
+                            UserTable.TABLE_NAME -> users = rs.getInt("count")
+                            QuestionTable.TABLE_NAME -> questions = rs.getInt("count")
+                            AnswerTable.TABLE_NAME -> answers = rs.getInt("count")
+                            UserAnswerTable.TABLE_NAME -> answered = rs.getInt("count")
+                        }
+                    }
+                }
+            }
+        }
+        return DashboardInfo(users, surveys, questions, answers, answered)
+    }
+
     fun getById(surveyId: Int): Survey? {
         var result: Survey? = null
 
         val helperList = ArrayList<SurveyDbHelper>()
 
-        var con: Connection? = null
-        var st: Statement? = null
-        var rs: ResultSet? = null
 
-        try {
-            con = Database.getConnection()
-            st = con.prepareStatement(
-                "SELECT s.$COL_ID, s.$COL_NAME, " +
+        Database.getConnection().use { con ->
+            con.prepareStatement(
+                "SELECT s.$COL_ID, s.$COL_NAME, s.$COL_OWNER, " +
                         "q.${QuestionTable.COL_ID} AS 'qId', q.${QuestionTable.COL_QUESTION}, q.${QuestionTable.COL_IS_SINGLE}, " +
                         "a.${AnswerTable.COL_ID} AS aId, a.${AnswerTable.COL_ANSWER}, CASE WHEN uac.cnt IS NULL THEN 0 ELSE uac.cnt END AS cnt " +
                         "FROM $TABLE_NAME s " +
@@ -96,33 +161,29 @@ object SurveyTable {
                         "ON a.id = uac.${UserAnswerTable.COL_ANSWER_ID} " +
                         "WHERE s.$COL_ID = ? " +
                         "ORDER BY q.${QuestionTable.COL_ID}, a.${AnswerTable.COL_ID};"
-            )
+            ).use { st ->
 
-            st.setInt(1, surveyId)
+                st.setInt(1, surveyId)
 
-            rs = st.executeQuery()
+                st.executeQuery().use { rs ->
 
-            while (rs.next()) {
-                helperList.add(
-                    SurveyDbHelper(
-                        rs.getInt(COL_ID),
-                        rs.getString(COL_NAME),
-                        rs.getInt("qId"),
-                        rs.getString(QuestionTable.COL_QUESTION),
-                        rs.getInt(QuestionTable.COL_IS_SINGLE),
-                        rs.getInt("aId"),
-                        rs.getString(AnswerTable.COL_ANSWER),
-                        rs.getInt("cnt")
-                    )
-                )
+                    while (rs.next()) {
+                        helperList.add(
+                            SurveyDbHelper(
+                                rs.getInt(COL_ID),
+                                rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
+                                rs.getInt("qId"),
+                                rs.getString(QuestionTable.COL_QUESTION),
+                                rs.getInt(QuestionTable.COL_IS_SINGLE),
+                                rs.getInt("aId"),
+                                rs.getString(AnswerTable.COL_ANSWER),
+                                rs.getInt("cnt")
+                            )
+                        )
+                    }
+                }
             }
-
-        } catch (e: SQLException) {
-            logger.log(Level.SEVERE, "getById", e)
-        } finally {
-            con?.close()
-            st?.close()
-            rs?.close()
         }
 
         if (helperList.isNotEmpty()) {
@@ -154,7 +215,7 @@ object SurveyTable {
 
             questions.add(Question(questionId, question, isSingle == 1, answers))
 
-            result = Survey(first.id, first.name, questions)
+            result = Survey(first.id, first.name, first.owner, questions)
 
         }
 
@@ -164,36 +225,58 @@ object SurveyTable {
     fun getAll(): List<Survey> {
         val result = ArrayList<Survey>()
 
-        var con: Connection? = null
-        var st: Statement? = null
-        var rs: ResultSet? = null
-
-        try {
-            con = Database.getConnection()
-            st = con.prepareStatement(
-                "SELECT $COL_ID, $COL_NAME " +
+        Database.getConnection().use { con ->
+            con.prepareStatement(
+                "SELECT $COL_ID, $COL_NAME, $COL_OWNER " +
                         "FROM $TABLE_NAME " +
                         "ORDER BY $COL_ID;"
-            )
+            ).use { st ->
 
-            rs = st.executeQuery()
+                st.executeQuery().use { rs ->
 
-            while (rs.next()) {
-                result.add(
-                    Survey(
-                        rs.getInt(COL_ID),
-                        rs.getString(COL_NAME),
-                        emptyList()
-                    )
-                )
+                    while (rs.next()) {
+                        result.add(
+                            Survey(
+                                rs.getInt(COL_ID),
+                                rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
+                                emptyList()
+                            )
+                        )
+                    }
+                }
             }
+        }
 
-        } catch (e: SQLException) {
-            logger.log(Level.SEVERE, "getAll", e)
-        } finally {
-            con?.close()
-            st?.close()
-            rs?.close()
+        return result
+    }
+
+    fun getAllUser(account: String): List<Survey> {
+        val result = ArrayList<Survey>()
+
+        Database.getConnection().use { con ->
+            con.prepareStatement(
+                "SELECT $COL_ID, $COL_NAME, $COL_OWNER " +
+                        "FROM $TABLE_NAME " +
+                        "WHERE $COL_OWNER = ? " +
+                        "ORDER BY $COL_ID;"
+            ).use { st ->
+                st.setString(1, account)
+
+                st.executeQuery().use { rs ->
+
+                    while (rs.next()) {
+                        result.add(
+                            Survey(
+                                rs.getInt(COL_ID),
+                                rs.getString(COL_NAME),
+                                rs.getString(COL_OWNER),
+                                emptyList()
+                            )
+                        )
+                    }
+                }
+            }
         }
 
         return result
@@ -202,6 +285,7 @@ object SurveyTable {
     private class SurveyDbHelper(
         val id: Int,
         val name: String,
+        val owner: String,
         val questionId: Int,
         val question: String,
         val isSingle: Int,

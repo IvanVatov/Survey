@@ -9,6 +9,7 @@ import com.example.survey.model.Question
 import com.example.survey.model.Survey
 import com.example.survey.model.UserAnswer
 import com.example.survey.model.UserSurvey
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ object ApplicationState : ViewModel() {
                 try {
                     httpClient.get(Configuration.SERVER_API_GET_SURVEY) {
                         parameter("id", id)
-                    }
+                    }.body()
                 } catch (e: Throwable) {
                     null
                 }
@@ -83,8 +84,8 @@ object ApplicationState : ViewModel() {
                 try {
                     httpClient.post(Configuration.SERVER_API_POST_RESULT) {
                         contentType(ContentType.Application.Json)
-                        body = userSurvey
-                    }
+                        setBody(userSurvey)
+                    }.body()
                 } catch (e: Throwable) {
                     null
                 }

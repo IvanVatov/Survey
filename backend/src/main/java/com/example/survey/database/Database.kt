@@ -1,12 +1,15 @@
 package com.example.survey.database
 
-import com.example.survey.database.table.*
+import com.example.survey.database.table.AnswerTable
+import com.example.survey.database.table.QuestionTable
+import com.example.survey.database.table.SurveyTable
+import com.example.survey.database.table.UserAnswerTable
+import com.example.survey.database.table.UserSurveyTable
+import com.example.survey.database.table.UserTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
-import java.sql.ResultSet
 import java.sql.SQLException
-import java.sql.Statement
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -16,7 +19,7 @@ object Database {
 
     private val dataSource: HikariDataSource
 
-    private const val DATABASE_VERSION = 3
+    private const val DATABASE_VERSION = 4
 
     init {
         val config = HikariConfig()
@@ -26,6 +29,7 @@ object Database {
         if (getDatabaseVersion() < DATABASE_VERSION) {
 
             createTables()
+
             setDatabaseVersion(DATABASE_VERSION)
         }
     }
@@ -35,7 +39,12 @@ object Database {
     }
 
     private fun createTables() {
-//        UserTable.createTable()
+        getConnection().use { con ->
+            con.prepareStatement("PRAGMA foreign_keys = ON;").use { ps ->
+                ps.execute()
+            }
+        }
+        UserTable.createTable()
         SurveyTable.createTable()
         QuestionTable.createTable()
         AnswerTable.createTable()
@@ -46,44 +55,33 @@ object Database {
     private fun getDatabaseVersion(): Int {
         var result = -1
 
-        var con: Connection? = null
-        var st: Statement? = null
-        var rs: ResultSet? = null
-
         try {
-            con = getConnection()
-            st = con.prepareStatement("PRAGMA user_version")
-            rs = st.executeQuery()
-
-            if (rs.next()) {
-                result = rs.getInt(1)
+            getConnection().use { con ->
+                con.prepareStatement("PRAGMA user_version").use { st ->
+                    st.executeQuery().use { rs ->
+                        if (rs.next()) {
+                            result = rs.getInt(1)
+                        }
+                    }
+                }
             }
         } catch (e: SQLException) {
             logger.log(Level.SEVERE, "getDatabaseVersion", e)
-        } finally {
-            con?.close()
-            st?.close()
-            rs?.close()
         }
 
         return result
     }
 
     private fun setDatabaseVersion(version: Int) {
-        var con: Connection? = null
-        var st: Statement? = null
-
         try {
-            con = getConnection()
-            st = con.prepareStatement("PRAGMA user_version = $version")
-
-            st.executeUpdate()
+            getConnection().use { con ->
+                con.prepareStatement("PRAGMA user_version = $version").use { st ->
+                    st.executeUpdate()
+                }
+            }
 
         } catch (e: SQLException) {
             logger.log(Level.SEVERE, "setDatabaseVersion", e)
-        } finally {
-            con?.close()
-            st?.close()
         }
     }
 }

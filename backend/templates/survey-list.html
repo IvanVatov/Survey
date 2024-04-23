@@ -1,0 +1,58 @@
+#parse("header.html")
+
+<div class="content-wrapper container">
+
+    <div class="page-heading">
+        <h3>Surveys</h3>
+    </div>
+    <div class="page-content">
+
+<!-- Hoverable rows start -->
+<section class="section">
+    <div class="row" id="table-hover-row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-content">
+                    <!-- table hover -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>NAME</th>
+                                <th>OWNER</th>
+                                <th>ACTIONS</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            #foreach ($item in $entries)
+
+                            <tr>
+                                <td class="text-bold-500">$item.id</td>
+                                <td class="text-bold-500">$item.name</td>
+                                <td class="text-bold-500"><a href="/user/details?account=$item.owner" class="btn btn-outline-primary">$item.owner</a></td>
+                                <td>
+                                    <a href="/survey/result?id=$item.id" class="btn icon btn-info"><i class="bi bi-eye"></i></a>
+                                    <a href="/survey/delete?id=$item.id" class="btn icon btn-danger"><i class="bi bi-trash"></i></a>
+                                </td>
+                            </tr>
+
+                            #end
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hoverable rows end -->
+
+
+    </div>
+
+</div>
+
+#parse("footer.html")

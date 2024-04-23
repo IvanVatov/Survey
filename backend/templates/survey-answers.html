@@ -1,0 +1,49 @@
+#parse("header.html")
+
+<div class="content-wrapper container">
+
+    <div class="page-heading">
+        <h3>$survey.name</h3>
+    </div>
+    <div class="page-content">
+
+
+        <section class="section">
+
+            #foreach($question in $survey.questions)
+
+            <div class="row" id="basic-table">
+                <div class="col-12 col-md-12">
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">$question.question</h4>
+                        </div>
+                        <div class="card-content">
+                            <!-- Table with outer spacing -->
+                            <div class="table-responsive">
+                                <table class="table table-lg">
+                                    <tbody>
+                                    #foreach($answer in $question.answers)
+                                    <tr>
+                                        <td class="text-bold-500">$answer.answer</td>
+                                        <td class="text-bold-500">$answer.count</td>
+                                    </tr>
+                                    #end
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            #end
+
+
+        </section>
+
+    </div>
+
+</div>
+
+#parse("footer.html")

@@ -1,6 +1,6 @@
 package com.example.survey.database.table
 
-import com.example.model.Question
+import com.example.survey.model.Question
 import com.example.survey.database.Database
 import java.sql.Connection
 import java.sql.ResultSet
@@ -31,7 +31,7 @@ object QuestionTable {
                         "$COL_SURVEY_ID INTEGER NOT NULL, " +
                         "$COL_QUESTION TEXT NOT NULL, " +
                         "$COL_IS_SINGLE INTEGER NOT NULL, " +
-                        "FOREIGN KEY ($COL_SURVEY_ID) REFERENCES ${SurveyTable.TABLE_NAME} (${SurveyTable.COL_ID}));"
+                        "FOREIGN KEY ($COL_SURVEY_ID) REFERENCES ${SurveyTable.TABLE_NAME} (${SurveyTable.COL_ID}) ON DELETE CASCADE);"
             )
             st.executeUpdate()
         } catch (e: SQLException) {

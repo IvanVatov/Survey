@@ -8,36 +8,31 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.survey.ApplicationState
-import com.example.survey.Configuration
 import com.example.survey.R
-import com.example.survey.api.httpClient
-import com.example.survey.model.Survey
 import com.example.survey.ui.theme.Purple200
 import com.example.survey.ui.theme.Purple500
 import com.example.survey.ui.theme.SurveyTheme
-import io.ktor.client.features.*
-import io.ktor.client.features.get
-import io.ktor.client.request.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen() {
     Scaffold(
-        content = {
+        content = { padding ->
             var text by remember { mutableStateOf("") }
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(padding)) {
 
                 Text(
                     text = stringResource(id = R.string.home_label),
